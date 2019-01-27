@@ -14,7 +14,7 @@ fun main(args: Array<String>){
 }
 
 fun process_dir(curr_dir: File){
-    val exclude: List<String> = listOf(curr_dir.getName(), "index.html").sorted()
+    val exclude: List<String> = listOf("index.html")
 
     val css = """
               <style>
@@ -40,7 +40,7 @@ fun process_dir(curr_dir: File){
         var l=""
 
         curr_dir.walkTopDown().maxDepth(1).sorted().forEach {
-           if(it.getName() !in exclude) {
+           if((it.getName() !in exclude) && (it != curr_dir)) {
               l += """          <li><a style="display:block; width:100%" href="./${it.getName()}">${if (it.isDirectory()) { "&#128193;" } else { "&rtrif;" }} ${it.getName()}</a></li>"""+"\n"
            }
         }
