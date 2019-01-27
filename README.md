@@ -16,7 +16,7 @@ than to (continue) search(ing) for it using a search engine.
 
 ## License 
 
-html4tree is copyrighted free software by Yamir Encarnación <yencarnacion@webninjapr.com>. You can redistribute it and/or modify it under the terms of the MIT license(see the file LICENSE).
+html4tree is copyrighted free software by Yamir Encarnación &lt;yencarnacion@webninjapr.com&gt;. You can redistribute it and/or modify it under the terms of the MIT license(see the file LICENSE).
 
 ## How to run
 
