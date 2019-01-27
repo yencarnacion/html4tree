@@ -28,3 +28,9 @@ To run:
 
 `$ java -jar ./build/libs/html4tree.jar <top directory to index>`
 
+## Other
+
+To delete all the index.html files generated with one command, do:
+
+`$ find <top directory to crawl> -name index.html -delete`
+
