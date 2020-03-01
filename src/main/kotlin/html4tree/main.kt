@@ -13,8 +13,40 @@ fun main(args: Array<String>){
    }
 }
 
+fun process_ignore_file(curr_dir: File): List<String> {
+   val ignore_filename = ".html4ignore"
+ 
+   val ignore_file_path = curr_dir.getAbsolutePath()+"/"+ignore_filename
+
+   val ignore_file = File(ignore_file_path)
+
+   val files_to_exclude = mutableListOf<String>() 
+
+   if(ignore_file.exists()){
+      val ignored_strings = mutableListOf<String>() 
+
+      ignore_file.forEachLine { ignored_strings.add(it) }
+
+      curr_dir.walkTopDown().maxDepth(1).sorted().forEach {
+         val current = it.getName()
+         ignored_strings.forEach { i_string ->
+            if(("^"+i_string+"$").toRegex().matches(current)){
+               files_to_exclude.add(current)
+            }
+         }
+      }
+   }
+
+   if ("index.html" !in files_to_exclude)
+      files_to_exclude.add("index.html")
+
+
+   return files_to_exclude
+}
+ 
 fun process_dir(curr_dir: File){
-    val exclude: List<String> = listOf("index.html")
+    
+    val exclude: List<String> = process_ignore_file(curr_dir)
 
     val css = """
               <style>

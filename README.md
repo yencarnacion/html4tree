@@ -28,6 +28,14 @@ To run:
 
 `$ java -jar ./build/libs/html4tree.jar <top directory to index>`
 
+## Excluding files from generated index.html file
+
+To exclude files place a `.html4ignore` file in the directory you wish to exclude particular files with each line of the file containing a valid regular expression that would match the filename you wish to exclude.
+
+example:  to exclude files that end in `.txt` you could use the following in the `.html4ignore` file:
+
+`.*.txt`
+
 ## Other
 
 To delete all the index.html files generated with one command, do:
