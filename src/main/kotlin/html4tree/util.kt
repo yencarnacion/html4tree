@@ -30,6 +30,7 @@ class LinkedList {
         if(l == null){
             return null
         } else {
+	    l.next = null
             return l.data
         }
     }
