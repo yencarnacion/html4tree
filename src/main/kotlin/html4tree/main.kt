@@ -85,7 +85,9 @@ fun process_dir(curr_dir: File){
     val index_middle = fun():String{ 
         var l=""
 
-        curr_dir.walkTopDown().maxDepth(1).sorted().forEach {
+        val dir_files: MutableList<File> = curr_dir.listFiles().toMutableList()
+        dir_files.sortWith(compareBy ({it.name}) )
+        dir_files.forEach {
            if((it.getName() !in exclude) && (it != curr_dir)) {
               l += """          <li><a style="display:block; width:100%" href="./${it.getName()}">${if (it.isDirectory()) { "&#128193;" } else { "&rtrif;" }} ${it.getName()}</a></li>"""+"\n"
            }
