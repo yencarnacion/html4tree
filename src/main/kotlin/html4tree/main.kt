@@ -2,46 +2,60 @@ package html4tree
 
 import java.io.File
 
-fun main(args: Array<String>){
+fun main(args: Array<String>) {
     if (args.isEmpty())
         return help()
-   
-   val top_dir = File(args[0])
 
-   top_dir.walkTopDown().filter({it -> it.isDirectory()}).forEach {
-      process_dir(it);
-   }
+    val top_dir = File(args[0])
+    require(top_dir.exists() && top_dir.isDirectory())
+
+    val ll = LinkedList()
+
+    ll.push(top_dir)
+
+    var d: File? = ll.pull()
+
+    while(d != null && d.isDirectory()){
+        process_dir(d)
+        d.listFiles().forEach {
+            if(it.isDirectory()){
+                ll.push(it)
+            }
+        }
+        d = ll.pull()
+    }
 }
 
 fun process_ignore_file(curr_dir: File): List<String> {
-   val ignore_filename = ".html4ignore"
+
+    val ignore_filename = ".html4ignore"
  
-   val ignore_file_path = curr_dir.getAbsolutePath()+"/"+ignore_filename
+    val ignore_file_path = curr_dir.getAbsolutePath()+"/"+ignore_filename
 
-   val ignore_file = File(ignore_file_path)
+    val ignore_file = File(ignore_file_path)
 
-   val files_to_exclude = mutableListOf<String>() 
+    val files_to_exclude = mutableListOf<String>()
 
-   if(ignore_file.exists()){
-      val ignored_strings = mutableListOf<String>() 
+    if(ignore_file.exists()){
+       val ignored_strings = mutableListOf<String>()
 
-      ignore_file.forEachLine { ignored_strings.add(it) }
+       ignore_file.forEachLine { ignored_strings.add(it) }
 
-      curr_dir.walkTopDown().maxDepth(1).sorted().forEach {
-         val current = it.getName()
-         ignored_strings.forEach { i_string ->
-            if(("^"+i_string+"$").toRegex().matches(current)){
-               files_to_exclude.add(current)
-            }
+       curr_dir.list().sorted().forEach {
+           val current = it
+           ignored_strings.forEach { i_string ->
+              if(("^"+i_string+"$").toRegex().matches(current)){
+                 files_to_exclude.add(current)
+              }
          }
-      }
-   }
+       }
+    }
 
-   if ("index.html" !in files_to_exclude)
-      files_to_exclude.add("index.html")
+    if ("index.html" !in files_to_exclude)
+       files_to_exclude.add("index.html")
 
 
-   return files_to_exclude
+    return files_to_exclude
 }
  
 fun process_dir(curr_dir: File){
