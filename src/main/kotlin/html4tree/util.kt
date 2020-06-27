@@ -2,26 +2,26 @@ package html4tree
 
 import java.io.File
 
-class Entry (val data: File, var next: Entry?){
+data class Entry (val data: File, val level: Int, var next: Entry?)
 
-}
+data class LinkedListEntry(val file: File, val level: Int)
 
 class LinkedList {
     var first: Entry? = null
     var last: Entry? = null
 
-    fun push(f: File) {
+    fun push(lle: LinkedListEntry) {
         if(last == null){
-            last = Entry(f, null)
+            last = Entry(lle.file, lle.level, null)
             first = last
         } else {
-            first?.next = Entry(f, null)
+            first?.next = Entry(lle.file, lle.level, null)
             first = first?.next
             first?.next = null
         }
     }
 
-    fun pull(): File? {
+    fun pull(): LinkedListEntry? {
         val l: Entry? = last
         if(l != null) {
             last = l.next
@@ -30,8 +30,8 @@ class LinkedList {
         if(l == null){
             return null
         } else {
-	    l.next = null
-            return l.data
+	        l.next = null
+            return LinkedListEntry(l.data, l.level)
         }
     }
 

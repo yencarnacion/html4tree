@@ -1,28 +1,44 @@
 package html4tree
 
 import java.io.File
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.types.int
 
-fun main(args: Array<String>) {
-    if (args.isEmpty())
-        return help()
+class Html4tree : CliktCommand() {
+    val maxLevel:Int by option(help="Number of levels deep for which to generate an index.html file", hidden = false).int().default(-1)
+    val topDir: String by argument(help="Top directory to crawl")
 
-    val top_dir = File(args[0])
+    override fun run() {
+        go(topDir, maxLevel)
+    }
+}
+
+fun main(args: Array<String>)  = Html4tree().main(args)
+
+fun go(topDir: String, maxLevel: Int)  {
+    val top_dir = File(topDir)
     require(top_dir.exists() && top_dir.isDirectory())
 
     val ll = LinkedList()
 
-    ll.push(top_dir)
+    ll.push(LinkedListEntry(top_dir,0))
 
-    var d: File? = ll.pull()
+    var lle: LinkedListEntry? = ll.pull()
 
-    while(d != null && d.isDirectory()){
-        process_dir(d)
-        d.listFiles().forEach {
+    while(lle != null && lle.file.isDirectory()){
+        val currentLevel: Int = lle.level
+        if(maxLevel == -1 || currentLevel <= maxLevel)
+           process_dir(lle.file)
+
+        lle.file.listFiles().forEach {
             if(it.isDirectory()){
-                ll.push(it)
+                ll.push( LinkedListEntry(it, currentLevel+1))
             }
         }
-        d = ll.pull()
+        lle = ll.pull()
     }
 }
 
